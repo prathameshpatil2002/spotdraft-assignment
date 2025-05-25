@@ -46,25 +46,25 @@ async def health_check():
 app.include_router(api_router)
 
 # Mount static files
-# app.mount("/static", StaticFiles(directory="static/static"), name="static")
+app.mount("/static", StaticFiles(directory="static/static"), name="static")
 
-# # Custom middleware to handle routing
-# @app.middleware("http")
-# async def custom_middleware(request: Request, call_next):
-#     path = request.url.path
-#     # If it's an API request, let it pass through
-#     if path.startswith("/api/"):
-#         response = await call_next(request)
-#         return response
+# Custom middleware to handle routing
+@app.middleware("http")
+async def custom_middleware(request: Request, call_next):
+    path = request.url.path
+    # If it's an API request, let it pass through
+    if path.startswith("/api/"):
+        response = await call_next(request)
+        return response
     
-#     # For all other paths, serve the frontend
-#     if path == "/" or not path.startswith("/static/"):
-#         return FileResponse("static/index.html")
+    # For all other paths, serve the frontend
+    if path == "/" or not path.startswith("/static/"):
+        return FileResponse("static/index.html")
     
-#     # Let other requests pass through (like static files)
-#     response = await call_next(request)
-#     return response
+    # Let other requests pass through (like static files)
+    response = await call_next(request)
+    return response
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True) 
+    uvicorn.run("app.main:app", reload=True) 
