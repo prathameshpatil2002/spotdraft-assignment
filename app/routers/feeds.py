@@ -150,7 +150,6 @@ async def create_feed(
     db_feed = db.query(FeedModel).options(
         joinedload(FeedModel.host),
         joinedload(FeedModel.comments).joinedload(Comment.user),
-        joinedload(FeedModel.invited_user_comments)
     ).filter(FeedModel.id == db_feed.id).first()
     
     return db_feed
