@@ -112,14 +112,16 @@ A collaborative PDF management application built with FastAPI and React. This ap
    ```
    uvicorn app.main:app
    ```
-# Live Application Link : https://pdf-collaboration-system.onrender.com
+# Live Application Link
+
+https://pdf-collaboration-system.onrender.com
 
 ## API Documentation
 
 FastAPI automatically generates interactive API documentation. When running the combined application (serving both frontend and backend):
 
-- Swagger UI: [https://pdf-collaboration-system.onrender.com](https://pdf-collaboration-system.onrender.com)/docs
-- ReDoc: [https://pdf-collaboration-system.onrender.com](https://pdf-collaboration-system.onrender.com)/redoc
+- Swagger UI: [https://pdf-collaboration-system.onrender.com/docs](https://pdf-collaboration-system.onrender.com/docs)
+- ReDoc: [https://pdf-collaboration-system.onrender.com/redoc](https://pdf-collaboration-system.onrender.com/redoc)
 
 > **Note:** The application is now configured to allow direct access to these documentation endpoints even when serving the frontend application.
 
