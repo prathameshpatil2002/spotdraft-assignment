@@ -158,7 +158,7 @@ When deploying with Docker, you can configure the application using these enviro
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@db:5432/pdf_app` |
 | `SECRET_KEY` | Secret key for JWT token generation | `your_secret_key_here` (change in production!) |
 | `ALGORITHM` | Algorithm used for JWT | `HS256` |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token expiration time in minutes | `30` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token expiration time in minutes | `1440` |
 
 ### Development with Docker
 
@@ -183,13 +183,6 @@ For development using Docker:
    ```
    postgresql://postgres:postgres@localhost:5432/pdf_app
    ```
-
-### Docker Troubleshooting
-
-- **Database connection issues**: Ensure the database service is running with `docker-compose ps`
-- **Frontend not loading**: Check if the frontend build was successful during Docker build
-- **File permissions**: If you're on Linux, you might need to adjust permissions for the mounted volumes
-- **Port conflicts**: If port 8000 or 5432 is already in use, change them in the `docker-compose.yml` file
 
 ## Building for Production
 
