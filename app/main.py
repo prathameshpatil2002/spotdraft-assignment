@@ -15,6 +15,7 @@ app = FastAPI(
     title="PDF Management & Collaboration System API",
     description="PDF Management & Collaboration System API",
     version="1.0.0",
+    openapi_version="3.0.2",
 )
 
 # Configure CORS
