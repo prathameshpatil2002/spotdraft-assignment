@@ -53,7 +53,7 @@ app.mount("/static", StaticFiles(directory="static/static"), name="static")
 async def custom_middleware(request: Request, call_next):
     path = request.url.path
     # If it's an API request, let it pass through
-    if path.startswith("/api/"):
+    if path.startswith("/api/") or path.startswith("/docs") or path.startswith("/redoc"):
         response = await call_next(request)
         return response
     
