@@ -17,10 +17,9 @@ UPLOAD_DIR = "app/media/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@router.get("/", response_model=List[FeedWithComments])
+@router.get("/search", response_model=List[FeedWithComments])
 async def get_feeds(
-    search: Optional[str] = None, 
-    topic_id: Optional[int] = None, 
+    q: Optional[str] = None, 
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -49,17 +48,51 @@ async def get_feeds(
     )
     
     # Apply additional filters
-    if search:
+    if q:
         main_query = main_query.filter(
             or_(
-                FeedModel.title.icontains(search),
-                FeedModel.description.icontains(search),
-                FeedModel.topic.has(Topic.topic.icontains(search))
+                FeedModel.title.icontains(q),
+                FeedModel.description.icontains(q),
+                FeedModel.topic.has(Topic.topic.icontains(q))
             )
         )
     
-    if topic_id:
-        main_query = main_query.filter(FeedModel.topic_id == topic_id)
+    feeds = main_query.order_by(FeedModel.updated_at.desc(), FeedModel.created_at.desc()).all()
+    
+    # Calculate total comments for each feed
+    for feed in feeds:
+        feed.comment_count = len(feed.comments)
+    
+    return feeds
+
+@router.get("/", response_model=List[FeedWithComments])
+async def get_feeds(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get all feeds with optional filtering, including those shared with the user."""
+    # Main query for feeds
+    main_query = db.query(FeedModel).options(
+        joinedload(FeedModel.host),
+        joinedload(FeedModel.comments).joinedload(Comment.user),
+    )
+    
+    # Filter to include only feeds owned by the user or shared with them
+    main_query = main_query.filter(
+        or_(
+            # Feeds owned by the user
+            FeedModel.host_id == current_user.id,
+            # Feeds shared with the user
+            FeedModel.id.in_(
+                db.query(UserShare.feed_id).filter(
+                    and_(
+                        UserShare.shared_with_id == current_user.id,
+                        UserShare.is_active == True
+                    )
+                )
+            )
+        )
+    )
     
     feeds = main_query.order_by(FeedModel.updated_at.desc(), FeedModel.created_at.desc()).all()
     
